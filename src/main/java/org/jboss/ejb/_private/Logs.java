@@ -24,6 +24,7 @@ import org.jboss.ejb.client.EJBIdentifier;
 import org.jboss.ejb.client.EJBLocator;
 import org.jboss.ejb.client.EJBMethodLocator;
 import org.jboss.ejb.client.EJBReceiver;
+import org.jboss.ejb.client.NoDestinationEstablishedException;
 import org.jboss.ejb.client.StatelessEJBLocator;
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.annotations.Cause;
@@ -150,8 +151,8 @@ public interface Logs extends BasicLogger {
 
     // @Message(id = 23, value = "EJB client interceptor %s is already registered")
 
-    @Message(id = 24, value = "No EJB receiver available for handling destination \"%s\"")
-    NoSuchEJBException noEJBReceiverAvailable(final URI locator);
+//    @Message(id = 24, value = "No EJB receiver available for handling destination \"%s\"")
+//    NoSuchEJBException noEJBReceiverAvailable(final URI locator);
 
     // @Message(id = 25, value = "No EJB receiver available for handling %s")
     // @Message(id = 26, value = "%s has not been associated with %s")
@@ -322,11 +323,17 @@ public interface Logs extends BasicLogger {
     @Message(id = 78, value = "EJB receiver \"%s\" returned a stateful locator with the wrong view type (expected %s, but actual was %s)")
     IllegalArgumentException viewTypeMismatch(EJBReceiver receiver, Class<?> expectedType, Class<?> actualType);
 
-    @Message(id = 79, value = "Unable to discover destination for request for EJB %s")
-    NoSuchEJBException noDestinationEstablished(EJBLocator<?> locator);
+//    @Message(id = 79, value = "Unable to discover destination for request for EJB %s")
+//    NoSuchEJBException noDestinationEstablished(EJBLocator<?> locator);
 
     @Message(id = 80, value = "Request not sent")
     IllegalStateException requestNotSent();
+
+    @Message(id = 81, value = "Unable to discover destination for request for EJB %s")
+    NoDestinationEstablishedException noDestinationEstablished(EJBLocator<?> locator);
+
+    @Message(id = 82, value = "No EJB receiver available for handling destination \"%s\"")
+    NoDestinationEstablishedException noEJBReceiverAvailable(final URI locator);
 
     // Proxy API errors
 
