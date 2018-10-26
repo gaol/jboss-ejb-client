@@ -250,9 +250,18 @@ class EJBClientChannel {
                                 final byte[] sourceIpBytes = new byte[ip6 ? 16 : 4];
                                 message.readFully(sourceIpBytes);
                                 final CidrAddress block = CidrAddress.create(sourceIpBytes, netmaskBits);
-                                final String destHost = message.readUTF();
+                                String destHost = message.readUTF();
                                 final int destPort = message.readUnsignedShort();
-                                final InetSocketAddress destination = new InetSocketAddress(destHost, destPort);
+                                InetSocketAddress destination = new InetSocketAddress(destHost, destPort);
+                                if (destination.getAddress() != null && destination.getAddress().isAnyLocalAddress()) {
+                                    destHost = channel.getConnection().getPeerURI().getHost();
+                                    if (destHost != null) {
+                                        InetSocketAddress clientChannelAddress = new InetSocketAddress(destHost, destPort);
+                                        Logs.INVOCATION.warnf("Received CLUSTER_TOPOLOGY(%x) message block, destination address is set to: %s, "
+                                                + "try to use client channel address: %s", msg, destination.toString(), clientChannelAddress.toString());
+                                        destination = clientChannelAddress;
+                                    }
+                                }
                                 nodeInformation.addAddress(channel.getConnection().getProtocol(), clusterName, block, destination);
                                 Logs.INVOCATION.debugf("Received CLUSTER_TOPOLOGY(%x) message block, registering block %s to address %s", msg, block, destination);
                             }
